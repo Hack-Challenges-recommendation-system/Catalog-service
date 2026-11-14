@@ -22,7 +22,7 @@ permissions:
 
 env:
   SERVICE: catalog-service
-  IMAGE: ${{ vars.DOCKERHUB_USER }}/recommendation-system-catalog-service
+  IMAGE: ${{ vars.DOCKERHUB_USER }}/hackathon-recommendation-system-catalog-service
 
 jobs:
   test:
