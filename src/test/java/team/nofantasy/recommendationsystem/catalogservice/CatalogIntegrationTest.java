@@ -75,6 +75,7 @@ class CatalogIntegrationTest {
         String body = mockMvc.perform(api(get("/api/v1/materials/m-003")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.paid").value(true))
+                .andExpect(jsonPath("$.access").value("PURCHASE"))
                 .andExpect(jsonPath("$.url").value("https://example.com/materials/m-003"))
                 .andReturn()
                 .getResponse()
@@ -99,6 +100,7 @@ class CatalogIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElements").value(2))
                 .andExpect(jsonPath("$.items[0].id").value("m-001"))
+                .andExpect(jsonPath("$.items[0].access").value("FREE"))
                 .andExpect(jsonPath("$.items[1].id").value("m-002"));
 
         mockMvc.perform(api(get("/api/v1/materials")).param("paid", "true"))

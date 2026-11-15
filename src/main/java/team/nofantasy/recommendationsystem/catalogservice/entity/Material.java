@@ -13,6 +13,7 @@ import java.util.List;
 
 /**
  * One educational material. For a paid material {@code summary} holds only a short benefit, never its content.
+ * {@code paid} is true for every material that isn't free; {@code access} tells a subscription from a purchase.
  */
 @Entity
 @Getter
@@ -59,7 +60,19 @@ public class Material {
     @NotNull
     private Boolean paid;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Access access;
+
     @NotBlank
     @Size(max = 1000)
     private String url;
+
+    public enum Access {
+        FREE,
+        /** Part of a subscription. */
+        SUBSCRIPTION,
+        /** Bought separately. */
+        PURCHASE
+    }
 }

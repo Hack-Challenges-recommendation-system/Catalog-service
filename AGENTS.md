@@ -6,9 +6,10 @@ The catalog of educational materials from the case data, with Russian full-text 
 
 ## How the catalog works
 
-- At startup `CatalogImporter` loads the file at `CATALOG_IMPORT_PATH` (e.g. `file:/data/catalog.json`) and upserts materials by `id`. An empty path skips the import.
-- The file is a JSON array of `MaterialImportDto`: `id`, `title`, `summary`, `format`, `durationMinutes`, `level`, `topics`, `businessStages`, `spheres`, `paid`, `url`. Rows without `id`, `title` or `url` are skipped.
-- **The case data has its own layout, which nobody has mapped yet.** Convert it to this format or add an adapter in `importer/`. Don't guess the field mapping; ask.
+- At startup `CatalogImporter` loads the file at `CATALOG_IMPORT_PATH` (e.g. `file:/export/catalog.json`) and upserts materials by `id`. An empty path or a missing file skips the import.
+- The file is a JSON array of `MaterialImportDto`: `id`, `title`, `summary`, `format`, `durationMinutes`, `level`, `topics`, `businessStages`, `spheres`, `paid`, `access`, `url`. Rows without `id`, `title` or `url` are skipped.
+- **The case data** is a PostgreSQL dump. The `case-data` service of the compose file in Documentation restores it and writes this file with `case-data/catalog.sql`, which also documents the field mapping the team agreed on. Change the mapping there, and agree on changes first.
+- `access` is `FREE`, `SUBSCRIPTION` (part of a subscription) or `PURCHASE` (bought separately). Without a known value, `paid: true` means `PURCHASE`. `paid` is true for both kinds that aren't free.
 - Paid materials: the importer cuts `summary` to 300 characters, so it can hold only a short benefit, and the API returns it with the provided `url`.
 - Search uses a generated `search_vector` column (`russian` configuration; title weight A, topics B, summary C) with a GIN index. A query matches any of its words (`plainto_tsquery` with `&` replaced by `|`) and is ranked by `ts_rank_cd`, so materials matching more words come first. This is the topic-match baseline the case compares recommendations against.
 - Anthropic has no embeddings API, so there is no vector search.
@@ -35,5 +36,5 @@ The catalog of educational materials from the case data, with Russian full-text 
 
 ## Tests
 
-- `CatalogIntegrationTest` imports the synthetic `src/test/resources/fixtures/catalog.json` into real Postgres. It checks Russian word forms, any-word matching, ranking, the stage filter, the paid summary, the order of `by-ids`, paging and validation.
-- `CatalogImporterTest` covers the import rules.
+- `CatalogIntegrationTest` imports the synthetic `src/test/resources/fixtures/catalog.json` into real Postgres. It checks Russian word forms, any-word matching, ranking, the stage filter, the paid summary and access, the order of `by-ids`, paging and validation.
+- `CatalogImporterTest` covers the import rules, including how `access` and `paid` are derived.
