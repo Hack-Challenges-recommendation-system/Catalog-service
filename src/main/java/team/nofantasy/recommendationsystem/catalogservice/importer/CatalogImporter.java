@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Loads the catalog file into the database at startup. Running it again updates materials with the same id.
@@ -91,7 +92,8 @@ public class CatalogImporter {
     }
 
     static Material toMaterial(MaterialImportDto row) {
-        boolean paid = Boolean.TRUE.equals(row.paid());
+        Material.Access access = toAccess(row);
+        boolean paid = access != Material.Access.FREE;
 
         return Material.builder()
                 .id(row.id().trim())
@@ -104,8 +106,25 @@ public class CatalogImporter {
                 .businessStages(row.businessStages() == null ? List.of() : row.businessStages())
                 .spheres(row.spheres() == null ? List.of() : row.spheres())
                 .paid(paid)
+                .access(access)
                 .url(row.url().trim())
                 .build();
+    }
+
+    /**
+     * The access of the row; without a known one, a paid material counts as bought separately.
+     */
+    static Material.Access toAccess(MaterialImportDto row) {
+        if (hasText(row.access())) {
+            String value = row.access().trim().toUpperCase(Locale.ROOT);
+            for (Material.Access access : Material.Access.values()) {
+                if (access.name().equals(value)) {
+                    return access;
+                }
+            }
+        }
+
+        return Boolean.TRUE.equals(row.paid()) ? Material.Access.PURCHASE : Material.Access.FREE;
     }
 
     private static String shorten(String summary) {

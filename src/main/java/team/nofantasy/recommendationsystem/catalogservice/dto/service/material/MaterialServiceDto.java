@@ -1,5 +1,7 @@
 package team.nofantasy.recommendationsystem.catalogservice.dto.service.material;
 
+import team.nofantasy.recommendationsystem.catalogservice.entity.Material;
+
 import java.util.List;
 
 public record MaterialServiceDto(
@@ -13,6 +15,7 @@ public record MaterialServiceDto(
         List<String> businessStages,
         List<String> spheres,
         Boolean paid,
+        Material.Access access,
         String url
 ) {
 }
