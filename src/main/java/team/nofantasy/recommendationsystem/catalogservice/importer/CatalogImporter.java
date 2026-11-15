@@ -7,7 +7,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
-import team.nofantasy.recommendationsystem.catalogservice.config.CatalogProperties;
+import team.nofantasy.recommendationsystem.catalogservice.configuration.properties.CatalogProperties;
 import team.nofantasy.recommendationsystem.catalogservice.dto.service.importer.MaterialImportDto;
 import team.nofantasy.recommendationsystem.catalogservice.entity.Material;
 import team.nofantasy.recommendationsystem.catalogservice.repository.MaterialRepository;

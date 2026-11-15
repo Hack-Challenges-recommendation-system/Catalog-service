@@ -1,4 +1,4 @@
-package team.nofantasy.recommendationsystem.catalogservice.config;
+package team.nofantasy.recommendationsystem.catalogservice.configuration.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
